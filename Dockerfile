@@ -28,8 +28,6 @@ RUN npm run build-docker
 FROM node:${NODE_IMAGE_VERSION} AS runner
 WORKDIR /app
 
-# Keep in sync with package.json prisma / @prisma/client / @prisma/adapter-pg
-ARG PRISMA_VERSION="7.6.0"
 ARG NODE_OPTIONS
 
 ENV NODE_ENV=production
@@ -39,8 +37,7 @@ ENV PATH="/app/node_modules/.bin:${PATH}"
 
 RUN addgroup --system --gid 1001 nodejs \
     && adduser --system --uid 1001 nextjs \
-    && apk add --no-cache curl \
-    && npm install -g pnpm
+    && apk add --no-cache curl
 
 COPY --from=builder --chown=nextjs:nodejs /app/public ./public
 COPY --from=builder /app/prisma ./prisma
@@ -48,17 +45,11 @@ COPY --from=builder /app/prisma.config.ts ./prisma.config.ts
 COPY --from=builder /app/scripts ./scripts
 COPY --from=builder /app/generated ./generated
 
-# Traced server output (overwrites package.json / node_modules — install extra runtime deps after this)
+# Standalone server + traced assets; then swap in builder node_modules so pnpm/@prisma paths match Turbopack externals
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
-
-COPY pnpm-workspace.yaml .npmrc ./
-
-# Align lockfile + manifest in one shot (never run pnpm before standalone, or lockfile won’t match)
-RUN pnpm add dotenv chalk semver \
-    prisma@${PRISMA_VERSION} \
-    @prisma/client@${PRISMA_VERSION} \
-    @prisma/adapter-pg@${PRISMA_VERSION}
+RUN rm -rf node_modules
+COPY --from=builder /app/node_modules ./node_modules
 
 RUN chown -R nextjs:nodejs /app
 
@@ -69,5 +60,4 @@ EXPOSE 3000
 ENV HOSTNAME=0.0.0.0
 ENV PORT=3000
 
-# Avoid `pnpm run` (CI=frozen-lockfile + install hooks). execSync('prisma …') needs PATH above.
 CMD ["sh", "-c", "node scripts/check-db.js && node scripts/update-tracker.js && node server.js"]
