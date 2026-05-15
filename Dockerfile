@@ -61,6 +61,9 @@ COPY --from=builder /app/generated ./generated
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
+# pnpm add ran as root; nextjs must own /app so pnpm can write temp/state when running CMD
+RUN chown -R nextjs:nodejs /app
+
 USER nextjs
 
 EXPOSE 3000
