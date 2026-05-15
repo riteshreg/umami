@@ -28,7 +28,7 @@ export default async function ({
 
 export const metadata: Metadata = {
   title: {
-    template: '%s | Umami',
-    default: 'Websites | Umami',
+    template: '%s | Retech Labs',
+    default: 'Websites | Retech Labs',
   },
 };
