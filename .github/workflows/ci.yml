@@ -22,7 +22,6 @@ jobs:
         with:
           node-version: 22
           cache: "pnpm"
-      - run: npm install --global pnpm
       - run: pnpm install
       - run: pnpm test
       - run: pnpm build
