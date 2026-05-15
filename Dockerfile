@@ -41,8 +41,11 @@ RUN set -x \
     && apk add --no-cache curl \
     && npm install -g pnpm
 
+# Enforce same allowBuilds as the repo (runner has no deps stage lockfile)
+COPY pnpm-workspace.yaml .npmrc ./
+
 # Script dependencies
-RUN pnpm --allow-build='@prisma/engines' add npm-run-all dotenv chalk semver \
+RUN pnpm add npm-run-all dotenv chalk semver \
     prisma@${PRISMA_VERSION} \
     @prisma/client@${PRISMA_VERSION} \
     @prisma/adapter-pg@${PRISMA_VERSION}
