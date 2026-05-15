@@ -28,31 +28,19 @@ RUN npm run build-docker
 FROM node:${NODE_IMAGE_VERSION} AS runner
 WORKDIR /app
 
-ARG PRISMA_VERSION="7.3.0"
+# Keep in sync with package.json prisma / @prisma/client / @prisma/adapter-pg
+ARG PRISMA_VERSION="7.6.0"
 ARG NODE_OPTIONS
 
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV NODE_OPTIONS=$NODE_OPTIONS
-# Container / no TTY: pnpm must not prompt or abort on node_modules purge (see ERR_PNPM_ABORTED_REMOVE_MODULES_DIR_NO_TTY)
-ENV CI=true
-# Avoid `pnpm run` triggering automatic `pnpm install` against the baked image layout
-ENV PNPM_VERIFY_DEPS_BEFORE_RUN=false
+ENV PATH="/app/node_modules/.bin:${PATH}"
 
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
-RUN set -x \
+RUN addgroup --system --gid 1001 nodejs \
+    && adduser --system --uid 1001 nextjs \
     && apk add --no-cache curl \
     && npm install -g pnpm
-
-# Enforce same allowBuilds as the repo (runner has no deps stage lockfile)
-COPY pnpm-workspace.yaml .npmrc ./
-
-# Script dependencies
-RUN pnpm add npm-run-all dotenv chalk semver \
-    prisma@${PRISMA_VERSION} \
-    @prisma/client@${PRISMA_VERSION} \
-    @prisma/adapter-pg@${PRISMA_VERSION}
 
 COPY --from=builder --chown=nextjs:nodejs /app/public ./public
 COPY --from=builder /app/prisma ./prisma
@@ -60,12 +48,18 @@ COPY --from=builder /app/prisma.config.ts ./prisma.config.ts
 COPY --from=builder /app/scripts ./scripts
 COPY --from=builder /app/generated ./generated
 
-# Automatically leverage output traces to reduce image size
-# https://nextjs.org/docs/advanced-features/output-file-tracing
+# Traced server output (overwrites package.json / node_modules — install extra runtime deps after this)
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
-# pnpm add ran as root; nextjs must own /app so pnpm can write temp/state when running CMD
+COPY pnpm-workspace.yaml .npmrc ./
+
+# Align lockfile + manifest in one shot (never run pnpm before standalone, or lockfile won’t match)
+RUN pnpm add dotenv chalk semver \
+    prisma@${PRISMA_VERSION} \
+    @prisma/client@${PRISMA_VERSION} \
+    @prisma/adapter-pg@${PRISMA_VERSION}
+
 RUN chown -R nextjs:nodejs /app
 
 USER nextjs
@@ -75,4 +69,5 @@ EXPOSE 3000
 ENV HOSTNAME=0.0.0.0
 ENV PORT=3000
 
-CMD ["pnpm", "start-docker"]
+# Avoid `pnpm run` (CI=frozen-lockfile + install hooks). execSync('prisma …') needs PATH above.
+CMD ["sh", "-c", "node scripts/check-db.js && node scripts/update-tracker.js && node server.js"]
