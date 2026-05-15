@@ -1,10 +1,14 @@
 packages:
   - '**'
+
 ignoredBuiltDependencies:
   - cypress
   - esbuild
   - sharp
+
 onlyBuiltDependencies:
+  - '@parcel/watcher'
   - '@prisma/client'
   - '@prisma/engines'
+  - '@swc/core'
   - prisma
