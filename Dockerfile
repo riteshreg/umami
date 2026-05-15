@@ -34,6 +34,10 @@ ARG NODE_OPTIONS
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV NODE_OPTIONS=$NODE_OPTIONS
+# Container / no TTY: pnpm must not prompt or abort on node_modules purge (see ERR_PNPM_ABORTED_REMOVE_MODULES_DIR_NO_TTY)
+ENV CI=true
+# Avoid `pnpm run` triggering automatic `pnpm install` against the baked image layout
+ENV PNPM_VERIFY_DEPS_BEFORE_RUN=false
 
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
