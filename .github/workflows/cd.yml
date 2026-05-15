@@ -4,6 +4,9 @@ on:
   push:
     tags:
       - "v*.*.*"
+    branches:
+      - main
+      - master
   workflow_dispatch:
     inputs:
       version:
@@ -38,7 +41,7 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          password: ${{ secrets.GHCR_TOKEN }}
 
       - name: Log into Docker Hub
         if: github.repository == 'umami-software/umami'
@@ -95,9 +98,17 @@ jobs:
               fi
             fi
           else
-            # Non-tag build (e.g. from main branch)
+            # Branch build (push to main/master or workflow_dispatch on a branch)
             GHCR_TAGS="ghcr.io/${{ github.repository }}:${REF_NAME}"
             DOCKER_TAGS="umamisoftware/umami:${REF_NAME}"
+
+            # Default branch merges: also publish :latest on GHCR (and Docker Hub for upstream only)
+            if [[ "$REF_NAME" == "main" ]] || [[ "$REF_NAME" == "master" ]]; then
+              GHCR_TAGS="$GHCR_TAGS,ghcr.io/${{ github.repository }}:latest"
+              if [[ "${{ github.repository }}" == "umami-software/umami" ]]; then
+                DOCKER_TAGS="$DOCKER_TAGS,umamisoftware/umami:latest"
+              fi
+            fi
           fi
 
           echo "ghcr_tags=$GHCR_TAGS" >> $GITHUB_OUTPUT
