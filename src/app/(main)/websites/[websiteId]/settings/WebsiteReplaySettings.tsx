@@ -119,7 +119,14 @@ export function WebsiteReplaySettings({ websiteId }: { websiteId: string }) {
         <>
           <Label>{t(labels.replayCode)}</Label>
           <Text color="muted">{t(messages.trackingCode)}</Text>
-          <TextField value={recorderCode} isReadOnly allowCopy asTextArea resize="none" className="code-textarea" />
+          <TextField
+            value={recorderCode}
+            isReadOnly
+            allowCopy
+            asTextArea
+            resize="none"
+            className="code-textarea"
+          />
           <Slider
             label={t(labels.sampleRate)}
             minValue={0.05}

@@ -1,18 +1,3 @@
-import { AdminNav } from '@/app/(main)/admin/AdminNav';
-import { SettingsNav } from '@/app/(main)/settings/SettingsNav';
-import { WebsiteNav } from '@/app/(main)/websites/[websiteId]/WebsiteNav';
-import { IconLabel } from '@/components/common/IconLabel';
-import { useGlobalState, useMessages, useNavigation } from '@/components/hooks';
-import {
-  Globe,
-  Grid2x2,
-  LayoutDashboard,
-  LinkIcon,
-  PanelLeft,
-  PanelsLeftBottom,
-} from '@/components/icons';
-import { UserButton } from '@/components/input/UserButton';
-import { Logo } from '@/components/svg';
 import {
   Button,
   type ButtonProps,
@@ -24,7 +9,22 @@ import {
   Tooltip,
   TooltipTrigger,
 } from '@umami/react-zen';
+import { AdminNav } from '@/app/(main)/admin/AdminNav';
+import { SettingsNav } from '@/app/(main)/settings/SettingsNav';
+import { WebsiteNav } from '@/app/(main)/websites/[websiteId]/WebsiteNav';
+import { IconLabel } from '@/components/common/IconLabel';
 import Link from '@/components/common/Link';
+import { useGlobalState, useMessages, useNavigation } from '@/components/hooks';
+import {
+  Globe,
+  Grid2x2,
+  LayoutDashboard,
+  LinkIcon,
+  PanelLeft,
+  PanelsLeftBottom,
+} from '@/components/icons';
+import { UserButton } from '@/components/input/UserButton';
+import { Logo } from '@/components/svg';
 
 export function SideNav(props: any) {
   const { t, labels } = useMessages();
@@ -93,7 +93,7 @@ export function SideNav(props: any) {
         <Row paddingX="3" alignItems="center" justifyContent="space-between" flexGrow="1">
           {!isCollapsed && (
             <IconLabel icon={<Logo />}>
-              <Text weight="bold">umami</Text>
+              <Text weight="bold">Retech Labs</Text>
             </IconLabel>
           )}
           <PanelButton />

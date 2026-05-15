@@ -1,5 +1,4 @@
 import { Column, Heading, Row, SearchField, Text } from '@umami/react-zen';
-import Link from '@/components/common/Link';
 import { useMemo, useState } from 'react';
 import { FixedSizeList } from 'react-window';
 import { SessionModal } from '@/app/(main)/websites/[websiteId]/sessions/SessionModal';
@@ -7,6 +6,7 @@ import { useFormat } from '@/components//hooks/useFormat';
 import { Avatar } from '@/components/common/Avatar';
 import { Empty } from '@/components/common/Empty';
 import { IconLabel } from '@/components/common/IconLabel';
+import Link from '@/components/common/Link';
 import {
   useCountryNames,
   useLocale,
