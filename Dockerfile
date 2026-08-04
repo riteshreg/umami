@@ -43,9 +43,21 @@ ENV NEXT_TELEMETRY_DISABLED=1
 ENV NODE_OPTIONS=$NODE_OPTIONS
 ENV PATH="/app/node_modules/.bin:${PATH}"
 
-RUN addgroup --system --gid 1001 nodejs \
-    && adduser --system --uid 1001 nextjs \
-    && apk add --no-cache curl
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nextjs
+RUN set -x \
+    && apk add --no-cache curl libc6-compat \
+    && npm install -g pnpm
+
+RUN echo {} > package.json
+
+RUN printf "allowBuilds:\n  '@prisma/engines': true\n  prisma: false\nverifyDepsBeforeRun: false\n" > pnpm-workspace.yaml
+
+# Script dependencies
+RUN pnpm add npm-run-all dotenv chalk semver \
+    prisma@${PRISMA_VERSION} \
+    @prisma/client@${PRISMA_VERSION} \
+    @prisma/adapter-pg@${PRISMA_VERSION}
 
 COPY --from=builder --chown=nextjs:nodejs /app/public ./public
 COPY --from=builder /app/prisma ./prisma
@@ -68,4 +80,4 @@ EXPOSE 3000
 ENV HOSTNAME=0.0.0.0
 ENV PORT=3000
 
-CMD ["sh", "-c", "node scripts/check-db.js && node scripts/update-tracker.js && node server.js"]
+CMD ["npm", "run", "start-docker"]
