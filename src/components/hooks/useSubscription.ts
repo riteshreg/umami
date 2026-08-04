@@ -6,6 +6,7 @@ export interface Subscription {
   isBusiness: boolean;
   isNoBilling: boolean;
   hasSubscription: boolean;
+  unlimitedWebsites: boolean;
 }
 
 const FEATURES = {
@@ -19,6 +20,7 @@ const defaultSubscription: Subscription = {
   isBusiness: false,
   isNoBilling: false,
   hasSubscription: false,
+  unlimitedWebsites: false,
 };
 
 export function useSubscription(teamId?: string | null) {

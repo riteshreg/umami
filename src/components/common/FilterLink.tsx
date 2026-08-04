@@ -23,15 +23,14 @@ export function FilterLink({ type, value, label, externalUrl, icon }: FilterLink
     <Row
       alignItems="center"
       gap
-      fontWeight={active && selected ? 'bold' : undefined}
       color={active && !selected ? 'muted' : undefined}
       onMouseOver={() => setShowLink(true)}
       onMouseOut={() => setShowLink(false)}
     >
       {icon}
-      {!value && `(${label || t(labels.unknown)})`}
+      {!value && <Text weight={active && selected ? 'bold' : undefined}>({label || t(labels.unknown)})</Text>}
       {value && (
-        <Text title={label || value} truncate>
+        <Text title={label || value} truncate weight={active && selected ? 'bold' : undefined}>
           <Link href={updateParams({ [type]: `eq.${value}` })} replace>
             {label || value}
           </Link>

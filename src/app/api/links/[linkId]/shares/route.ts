@@ -4,7 +4,7 @@ import { uuid } from '@/lib/crypto';
 import { getRandomChars } from '@/lib/generate';
 import { parseRequest } from '@/lib/request';
 import { json, unauthorized } from '@/lib/response';
-import { filterParams, pagingParams } from '@/lib/schema';
+import { anyObjectParam, filterParams, pagingParams } from '@/lib/schema';
 import { canUpdateLink, canViewLink } from '@/permissions';
 import { createShare, getSharesByEntityId } from '@/queries/prisma';
 
@@ -39,6 +39,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ link
 export async function POST(request: Request, { params }: { params: Promise<{ linkId: string }> }) {
   const schema = z.object({
     name: z.string().max(200),
+    parameters: anyObjectParam.optional(),
   });
 
   const { auth, body, error } = await parseRequest(request, schema);
@@ -48,7 +49,8 @@ export async function POST(request: Request, { params }: { params: Promise<{ lin
   }
 
   const { linkId } = await params;
-  const { name } = body;
+  const { name, parameters } = body;
+  const shareParameters = parameters ?? {};
 
   if (!(await canUpdateLink(auth, linkId))) {
     return unauthorized();
@@ -60,7 +62,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ lin
     shareType: ENTITY_TYPE.link,
     name,
     slug: getRandomChars(16),
-    parameters: {},
+    parameters: shareParameters,
   });
 
   return json(share);

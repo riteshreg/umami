@@ -1,12 +1,12 @@
 packages:
   - '**'
-
-# pnpm v10.26+ / v11: explicit build script approval (replaces onlyBuiltDependencies / ignoredBuiltDependencies)
+  - '!dist'
+  - '!**/dist/**'
 allowBuilds:
-  '@parcel/watcher': true
+  '@parcel/watcher': false
   '@prisma/engines': true
-  '@swc/core': true
-  cypress: false
-  esbuild: true
+  '@swc/core': false
+  esbuild: false
+  msw: false
   prisma: true
-  sharp: true
+  sharp: false

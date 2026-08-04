@@ -21,8 +21,8 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   const schema = z.object({
-    name: z.string().optional(),
-    description: z.string().optional(),
+    name: z.string().max(200).optional(),
+    description: z.string().max(500).optional(),
     parameters: z.object({}).passthrough().optional(),
   });
 

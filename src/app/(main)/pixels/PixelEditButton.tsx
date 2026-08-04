@@ -10,7 +10,6 @@ export function PixelEditButton({ pixelId }: { pixelId: string }) {
   return (
     <LinkButton
       href={renderUrl(`/pixels/${pixelId}/edit`, false)}
-      title={t(labels.edit)}
       aria-label={t(labels.edit)}
       variant="quiet"
     >

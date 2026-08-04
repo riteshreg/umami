@@ -25,6 +25,7 @@ import { PageBody } from '@/components/common/PageBody';
 import { useShare } from '@/components/hooks';
 import { MobileMenuButton } from '@/components/input/MobileMenuButton';
 import { ENTITY_TYPE } from '@/lib/constants';
+import { getShareTheme } from '@/lib/share';
 import { ShareFooter } from './ShareFooter';
 import { ShareNav } from './ShareNav';
 
@@ -68,20 +69,20 @@ export function SharePage() {
     setNavCollapsed(value);
   };
   const share = useShare();
-  const { setTheme } = useTheme();
+  const { initTheme } = useTheme();
   const router = useRouter();
   const pathname = usePathname();
   const path = getSharePath(pathname);
   const { slug, websiteId, boardId, pixelId, linkId, parameters = {}, shareType } = share;
+  const shareTheme = getShareTheme(parameters);
 
   useEffect(() => {
-    const url = new URL(window?.location?.href);
-    const theme = url.searchParams.get('theme');
+    initTheme(shareTheme, 'system');
 
-    if (theme === 'light' || theme === 'dark') {
-      setTheme(theme);
-    }
-  }, [setTheme]);
+    return () => {
+      initTheme(undefined, 'system');
+    };
+  }, [shareTheme, initTheme]);
 
   // Check if the requested path is allowed
   const pageKey = path || '';

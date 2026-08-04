@@ -10,7 +10,6 @@ export function LinkEditButton({ linkId }: { linkId: string }) {
   return (
     <LinkButton
       href={renderUrl(`/links/${linkId}/edit`, false)}
-      title={t(labels.edit)}
       aria-label={t(labels.edit)}
       variant="quiet"
     >
