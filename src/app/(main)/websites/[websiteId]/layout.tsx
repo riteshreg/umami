@@ -28,7 +28,7 @@ export default async function ({
 
 export const metadata: Metadata = {
   title: {
-    template: '%s | Retech Labs',
-    default: 'Websites | Retech Labs',
+    template: '%s | Touch The Himalaya',
+    default: 'Websites | Touch The Himalaya',
   },
 };

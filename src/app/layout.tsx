@@ -51,8 +51,8 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     metadataBase: getBaseUrl(headerStore),
     title: {
-      template: '%s | Retech Labs',
-      default: 'Retech Labs',
+      template: '%s | Touch The Himalaya',
+      default: 'Touch The Himalaya',
     },
   };
 }

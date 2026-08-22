@@ -98,7 +98,7 @@ export function SideNav(props: any) {
         >
           {!isCollapsed && (
             <IconLabel icon={<Logo />}>
-              <Text weight="bold">Retech Labs</Text>
+              <Text weight="bold">Touch The Himalaya</Text>
             </IconLabel>
           )}
           <PanelButton />

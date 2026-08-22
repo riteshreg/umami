@@ -12,7 +12,7 @@ export default function ({ children }) {
 
 export const metadata: Metadata = {
   title: {
-    template: '%s | Retech Labs',
-    default: 'Retech Labs',
+    template: '%s | Touch The Himalaya',
+    default: 'Touch The Himalaya',
   },
 };

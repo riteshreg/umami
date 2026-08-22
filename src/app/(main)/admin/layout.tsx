@@ -11,7 +11,7 @@ export default function ({ children }) {
 
 export const metadata: Metadata = {
   title: {
-    template: '%s | Admin | Retech Labs',
-    default: 'Admin | Retech Labs',
+    template: '%s | Admin | Touch The Himalaya',
+    default: 'Admin | Touch The Himalaya',
   },
 };
