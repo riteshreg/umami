@@ -121,7 +121,7 @@ jobs:
           push: true
           tags: ${{ steps.compute.outputs.ghcr_tags }}
           cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-to: type=gha,mode=max,ignore-error=true
 
       - name: Build and push to Docker Hub
         if: github.repository == 'umami-software/umami'
@@ -132,4 +132,4 @@ jobs:
           push: true
           tags: ${{ steps.compute.outputs.docker_tags }}
           cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-to: type=gha,mode=max,ignore-error=true
